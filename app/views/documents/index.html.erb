@@ -1,0 +1,10 @@
+<h1><%= @documents.model_name.human.pluralize %></h1>
+
+<% @documents.map{ |d| present( d, DocumentPresenter) }.each do |doc| %>
+
+<%= doc.heading %>
+<%= doc.subheading %>
+<%= doc.description %>
+<%= doc.attachment %>
+<%= doc.link_to_edit %> | <%= doc.link_to_destroy %>
+<% end %>

@@ -1,6 +1,6 @@
 class DocumentsController < ApplicationController
   
-  before_action :validate_type!
+  before_action :validate_model_type!
 
   def index
   	@documents = klass.all
@@ -33,7 +33,7 @@ class DocumentsController < ApplicationController
   def update
   	@document = klass.find(params[:id])
     # authorize user && user.admin?
-  	if @doument.update(document_params)
+  	if @document.update(document_params)
   	  redirect_to documents_url, notice: 'Document Updated.'
   	else
       render :edit 
@@ -49,26 +49,30 @@ class DocumentsController < ApplicationController
 
 private
 
-  def validate_type!
-    unless Document.types.include?(params[:type])
+  def resources
+    @resources ||= request.path.slice(/[a-zA-Z]+/)
+  end
+  
+  def model_name
+    @model_name ||= resources.capitalize.singularize if resources
+  end
+
+  def validate_model_type!
+    unless Document.types.include?(model_name)
       redirect_to root_url, notice: 'Invald document request'
     end
   end
-  
-  def document_params
-    params(klass_name.to_sym).permit(:title,:author,:date,:description,:attachemnt)
-  end
 
   def klass
-  	params[:type].constantize
-  end
-  
-  def klass_name
-    params[:type].downcase
+    model_name.constantize
   end
 
+  def document_params
+    params.require(model_name.downcase.to_sym).permit(:title,:author,:date,:description,:attachment)
+  end
+  
   def documents_url
-    send "{klass_name.pluralize}_url"
+    send "#{resources}_url"
   end
 
 end

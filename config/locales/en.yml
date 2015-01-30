@@ -20,4 +20,11 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  date:
+    formats:
+      default: "%B %d, %Y"
+  activerecord:
+    models:
+      letter: Investor Letter
+      article: Article
+      report: Performance Report 
